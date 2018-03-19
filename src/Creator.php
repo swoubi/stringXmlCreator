@@ -7,10 +7,10 @@ class Creator
 	private $root;
 	private $data;
 
-	public function __construct(string $root, string $header = '<?xml version="1.0" encoding="utf-8"?>')
+	public function __construct(string $root, array $attributes = [], string $header = '<?xml version="1.0" encoding="utf-8"?>')
 	{
 		$this->root = $root;
-		$this->data = "{$header}<{$root}>";
+		$this->data = "{$header}<{$root}{$this->buildAttributes($attributes)}>";
 	}
 
 	public function openNode(string $name, array $attributes = []): Creator
@@ -29,8 +29,13 @@ class Creator
 
 	public function addValue(string $name, string $value, array $attributes = []): Creator
 	{
-		$value = str_replace(['"', '&', '\'', '<', '>'], ['&quot;', '&amp;', '&apos;', '&lt;', '&gt;'], $value);
-		$this->data .= "<{$name}{$this->buildAttributes($attributes)}>{$value}</{$name}>";
+		$this->data .= "<{$name}{$this->buildAttributes($attributes)}";
+		if (!empty($value)) {
+			$value = str_replace(['"', '&', '\'', '<', '>'], ['&quot;', '&amp;', '&apos;', '&lt;', '&gt;'], $value);
+			$this->data .= ">{$value}</{$name}>";
+		} else {
+			$this->data .= "/>";
+		}
 
 		return $this;
 	}
