@@ -30,7 +30,7 @@ class Creator
 	public function addValue(string $name, string $value, array $attributes = []): Creator
 	{
 		$this->data .= "<{$name}{$this->buildAttributes($attributes)}";
-		if (!empty($value)) {
+		if (!empty($value) || $value == 0) {
 			$value = str_replace(['"', '&', '\'', '<', '>'], ['&quot;', '&amp;', '&apos;', '&lt;', '&gt;'], $value);
 			$this->data .= ">{$value}</{$name}>";
 		} else {
